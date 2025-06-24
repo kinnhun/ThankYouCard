@@ -33,25 +33,26 @@
             top: 0;
             left: 0;
             transform-origin: left;
-            transition: transform 1s ease;
+            transition: transform 0.7s ease;
+            /* Reduced transition time for faster flip */
             transform-style: preserve-3d;
             z-index: 0;
         }
 
         .page.active {
             z-index: 100;
-            /* Active page (front or back) is always on top */
+            /* Active page is always on top */
         }
 
         .page.flipped {
             transform: rotateY(-180deg);
             z-index: 10;
-            /* Flipped pages are above unflipped but below active */
+            /* Flipped pages above unflipped but below active */
         }
 
         .page:not(.active):not(.flipped) {
             z-index: 0;
-            /* Unflipped, non-active pages are at the bottom */
+            /* Unflipped, non-active pages at the bottom */
         }
 
         .page .front,
@@ -131,6 +132,22 @@
                 }
                 const data = await response.json();
 
+                // Preload images
+                const preloadImages = data.map(item => {
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.src = item.img;
+                        img.onload = resolve;
+                        img.onerror = () => reject(new Error(`Không thể tải ảnh: ${item.img}`));
+                    });
+                });
+
+                await Promise.all(preloadImages).catch(error => {
+                    console.error('Error preloading images:', error);
+                    errorMessage.textContent = 'Lỗi khi tải một số ảnh: ' + error.message;
+                    errorMessage.style.display = 'block';
+                });
+
                 // Create a page for each JSON entry
                 data.forEach((item, index) => {
                     const page = document.createElement('div');
@@ -158,14 +175,15 @@
                         page.classList.remove('active', 'flipped');
                         if (index === currentPage) {
                             page.classList.add('active');
+                            page.style.zIndex = 100; // Ensure active page is on top
                             if (!isFront) {
                                 page.classList.add('flipped');
                             }
                         } else if (index < currentPage) {
                             page.classList.add('flipped');
-                            page.style.zIndex = 10 + index; // Ensure flipped pages stack in order
+                            page.style.zIndex = 10 + index; // Stack flipped pages in order
                         } else {
-                            page.style.zIndex = pages.length - index; // Unflipped pages stack in reverse
+                            page.style.zIndex = pages.length - index; // Stack unflipped pages in reverse
                         }
                     });
                 }
