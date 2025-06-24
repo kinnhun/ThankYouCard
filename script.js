@@ -1,12 +1,27 @@
-const pages = document.querySelectorAll('.page');
-let current = 0;
+const pages = Array.from(document.querySelectorAll('.page'));
+let currentPage = 0;
 
-document.getElementById('nextBtn').addEventListener('click', () => {
-    if (current < pages.length - 1) {
-        pages[current].classList.remove('active');
-        current++;
-        pages[current].classList.add('active');
+function nextPage() {
+    if (currentPage < pages.length) {
+        pages[currentPage].classList.add('flipped');
+        currentPage++;
+    }
+}
+
+function prevPage() {
+    if (currentPage > 0) {
+        currentPage--;
+        pages[currentPage].classList.remove('flipped');
+    }
+}
+
+document.getElementById('book').addEventListener('click', function (e) {
+    const rect = this.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+
+    if (clickX > rect.width / 2) {
+        nextPage();
     } else {
-        alert("Đã hết thiệp! 🎉");
+        prevPage();
     }
 });
