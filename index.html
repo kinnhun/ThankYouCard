@@ -19,10 +19,10 @@
         }
 
         .book {
-            width: 600px;
-            height: 400px;
+            width: 37.5rem;
+            height: 25rem;
             position: relative;
-            perspective: 2000px;
+            perspective: 125rem;
             cursor: pointer;
         }
 
@@ -61,8 +61,8 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 0.625rem;
+            box-shadow: 0 0 0.9375rem rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
 
@@ -117,8 +117,10 @@
         .page .back::after {
             content: '';
             position: absolute;
-            width: 60px;
-            height: 60px;
+            width: 3.75rem;
+            /* 60px */
+            height: 3.75rem;
+            /* 60px */
             background: url('sakura.png') no-repeat center/cover;
             opacity: 0.5;
             z-index: 101;
@@ -126,8 +128,10 @@
 
         .page .front::before,
         .page .back::before {
-            top: 10px;
-            left: 10px;
+            top: 0.625rem;
+            /* 10px */
+            left: 0.625rem;
+            /* 10px */
             transform: rotate(0deg);
         }
 
@@ -137,13 +141,121 @@
             right: 10px;
             transform: rotate(180deg);
         }
+
+        @media (max-width: 768px) {
+            .book {
+                width: 45vw;
+                /* chiếm khoảng nửa màn hình */
+                height: 65vw;
+                /* tỉ lệ giữ đẹp */
+                margin-left: 5vw;
+                /* đẩy book sang trái một chút */
+            }
+
+            .page-content {
+                font-size: 0.9rem;
+                max-width: 100%;
+            }
+
+            .page .front {
+                padding: 1rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+            }
+
+            .page .back {
+                padding: 0;
+            }
+
+            .page .back img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 0.625rem;
+            }
+
+            .page h2 {
+                font-size: 1.1rem;
+            }
+
+            .hint {
+                font-size: 0.75rem;
+                text-align: left;
+                width: 100%;
+                padding-left: 1rem;
+            }
+
+            .page .front::before,
+            .page .front::after,
+            .page .back::before,
+            .page .back::after {
+                width: 2rem;
+                height: 2rem;
+            }
+        }
+
+        .container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .left-panel,
+        .right-panel {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .book {
+            width: 90%;
+            max-width: 300px;
+            aspect-ratio: 3 / 2;
+            /* hoặc height cố định: height: 200px; */
+            perspective: 125rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            font-style: italic;
+            color: #999;
+            text-align: center;
+            padding: 0.5rem;
+        }
     </style>
 </head>
 
 <body>
-    <div class="book" id="book">
-        <!-- Pages will be dynamically inserted here -->
-    </div>
+
+
+    <body>
+        <div class="container">
+            <div class="left-panel">
+
+            </div>
+            <div class="right-panel">
+                <div class="book" id="book">
+                    <!-- Pages will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+
+    </body>
+
+
+
+
+
+
+
+
     <div class="hint">(Bấm vào bên trái hoặc bên phải trang sách để lật)</div>
     <div class="error-message" id="error-message" style="display: none;"></div>
 
