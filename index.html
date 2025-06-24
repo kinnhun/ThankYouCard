@@ -109,6 +109,37 @@
             font-size: 16px;
             text-align: center;
         }
+
+
+
+
+
+        .page .front::before,
+        .page .front::after,
+        .page .back::before,
+        .page .back::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: url('sakura.png') no-repeat center/cover;
+            opacity: 0.5;
+            z-index: 101;
+        }
+
+        .page .front::before,
+        .page .back::before {
+            top: 10px;
+            left: 10px;
+            transform: rotate(0deg);
+        }
+
+        .page .front::after,
+        .page .back::after {
+            bottom: 10px;
+            right: 10px;
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 
