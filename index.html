@@ -15,6 +15,7 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            flex-direction: column;
         }
 
         .book {
@@ -22,6 +23,7 @@
             height: 400px;
             position: relative;
             perspective: 2000px;
+            cursor: pointer;
         }
 
         .page {
@@ -33,7 +35,6 @@
             transform-origin: left;
             transition: transform 1s ease;
             transform-style: preserve-3d;
-            z-index: 5;
         }
 
         .page .front,
@@ -71,7 +72,6 @@
 
         .page.flipped {
             transform: rotateY(-180deg);
-            z-index: 0 !important;
         }
 
         .page-content {
@@ -84,13 +84,20 @@
             color: #d04e4e;
             margin-top: 0;
         }
+
+        .hint {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #999;
+            font-style: italic;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="book">
-        <div class="page" onclick="flipPage(this)" style="z-index:5">
+    <div class="book" id="book">
+        <div class="page">
             <div class="front">
                 <div class="page-content">
                     <h2>Kính gửi cô Đặng Thị Doanh</h2>
@@ -104,7 +111,7 @@
             </div>
         </div>
 
-        <div class="page" onclick="flipPage(this)" style="z-index:4">
+        <div class="page">
             <div class="front">
                 <div class="page-content">
                     <h2>Một năm học nữa sắp kết thúc...</h2>
@@ -117,7 +124,7 @@
             </div>
         </div>
 
-        <div class="page" onclick="flipPage(this)" style="z-index:3">
+        <div class="page">
             <div class="front">
                 <div class="page-content">
                     <h2>Chúng em thấy mình thật may mắn</h2>
@@ -130,7 +137,7 @@
             </div>
         </div>
 
-        <div class="page" onclick="flipPage(this)" style="z-index:2">
+        <div class="page">
             <div class="front">
                 <div class="page-content">
                     <h2>Chúng em xin lỗi cô...</h2>
@@ -143,7 +150,7 @@
             </div>
         </div>
 
-        <div class="page" onclick="flipPage(this)" style="z-index:1">
+        <div class="page">
             <div class="front">
                 <div class="page-content">
                     <h2>Lời chúc cuối cùng</h2>
@@ -157,10 +164,36 @@
         </div>
     </div>
 
+    <div class="hint">(Bấm vào bên trái hoặc bên phải trang sách để lật)</div>
+
     <script>
-        function flipPage(page) {
-            page.classList.add('flipped');
+        const pages = Array.from(document.querySelectorAll('.page')).reverse(); // đảo ngược để trang đầu nằm dưới cùng
+        let currentPage = 0;
+
+        function nextPage() {
+            if (currentPage < pages.length) {
+                pages[currentPage].classList.add('flipped');
+                currentPage++;
+            }
         }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                pages[currentPage].classList.remove('flipped');
+            }
+        }
+
+        document.getElementById('book').addEventListener('click', function (e) {
+            const rect = this.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+
+            if (clickX > rect.width / 2) {
+                nextPage(); // click bên phải => lật tới
+            } else {
+                prevPage(); // click bên trái => lật lui
+            }
+        });
     </script>
 
 </body>
