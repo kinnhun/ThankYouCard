@@ -39,8 +39,19 @@
         }
 
         .page.active {
+            z-index: 100;
+            /* Active page (front or back) is always on top */
+        }
+
+        .page.flipped {
+            transform: rotateY(-180deg);
             z-index: 10;
-            /* Active page is on top */
+            /* Flipped pages are above unflipped but below active */
+        }
+
+        .page:not(.active):not(.flipped) {
+            z-index: 0;
+            /* Unflipped, non-active pages are at the bottom */
         }
 
         .page .front,
@@ -72,10 +83,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .page.flipped {
-            transform: rotateY(-180deg);
         }
 
         .page-content {
@@ -144,32 +151,43 @@
                 });
 
                 let currentPage = 0;
+                let isFront = true; // Track whether we're viewing front (text) or back (image)
 
-                // Set initial active page
                 function updatePages() {
                     pages.forEach((page, index) => {
                         page.classList.remove('active', 'flipped');
-                        page.style.zIndex = pages.length - index; // Stack pages in reverse order
                         if (index === currentPage) {
                             page.classList.add('active');
+                            if (!isFront) {
+                                page.classList.add('flipped');
+                            }
                         } else if (index < currentPage) {
                             page.classList.add('flipped');
+                            page.style.zIndex = 10 + index; // Ensure flipped pages stack in order
+                        } else {
+                            page.style.zIndex = pages.length - index; // Unflipped pages stack in reverse
                         }
                     });
                 }
 
                 function nextPage() {
-                    if (currentPage < pages.length - 1) {
-                        currentPage++;
-                        updatePages();
+                    if (isFront && currentPage < pages.length - 1) {
+                        isFront = false; // Show back of current page
+                    } else if (!isFront && currentPage < pages.length - 1) {
+                        currentPage++; // Move to next page's front
+                        isFront = true;
                     }
+                    updatePages();
                 }
 
                 function prevPage() {
-                    if (currentPage > 0) {
-                        currentPage--;
-                        updatePages();
+                    if (!isFront) {
+                        isFront = true; // Show front of current page
+                    } else if (currentPage > 0) {
+                        currentPage--; // Move to previous page's back
+                        isFront = false;
                     }
+                    updatePages();
                 }
 
                 book.addEventListener('click', function (e) {
